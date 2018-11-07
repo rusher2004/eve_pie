@@ -20,6 +20,7 @@ with driver.session() as session:
 
 	with open('csv/planetSchematicsTypeMap.csv') as schematics_map:
 		readCSV = csv.reader(schematics_map, delimiter=',')
+		next(readCSV, None)
 		for row in readCSV:
 			schematic_id = int(row[0])
 			type_id = int(row[1])

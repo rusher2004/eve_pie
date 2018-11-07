@@ -55,6 +55,31 @@ def write_alliance_names(tx, id, name):
     tx.run("MATCH (a:alliance {alliance_id: $id}) SET a.name=$name RETURN a",
         id=id, name=name)    
 
+#Killmails
+
+def write_character_kill(tx, killmail):
+	tx.run("UNWIND $km.victim as victim\n" \
+			+ "UNWIND $km.attackers as attackers\n" \
+			+ "MERGE (k:killmail {killmail_id: toInteger($km.killmail_id)})\n" \
+			+ "SET k.killmail_time=$km.killmail_time, k.x=toFloat(victim.position.x), k.y=toFloat(victim.position.y), k.z=toFloat(victim.position.z), k.ship_type_id=toInteger(victim.ship_type_id), k.victim_corporation_id=toInteger(victim.corporation_id), k.victim_alliance_id=toInteger(victim.alliance_id), k.victim_faction_id=toInteger(victim.faction_id), k.damage_taken=toInteger(victim.damage_taken)\n" \
+			+ "MERGE (cv:character {character_id: toInteger(victim.character_id)})\n" \
+			+ "MERGE (cv)-[:VICTIM]->(k)\n" \
+			+ "FOREACH(character in CASE WHEN attackers.character_id IS NOT NULL THEN [1] ELSE [] END | MERGE (ca:character {character_id: toInteger(attackers.character_id)}) MERGE (ca)-[:ATTACKER]-(k))\n" \
+			+ "FOREACH(corporation in CASE WHEN (attackers.character_id IS NULL AND attackers.corporation_id IS NOT NULL) THEN [1] ELSE [] END | MERGE (co:corporation {corporation_id: toInteger(attackers.corporation_id)}) MERGE (co)-[:ATTACKER]-(k))\n" \
+			+ "FOREACH(alliance in CASE WHEN (attackers.character_id IS NULL AND attackers.corporation_id IS NULL AND attackers.alliance_id IS NOT NULL) THEN [1] ELSE [] END | MERGE (al:alliance {alliance_id: toInteger(attackers.alliance_id)}) MERGE (al)-[:ATTACKER]-(k))\n" \
+			+ "FOREACH(faction in CASE WHEN (attackers.character_id IS NULL AND attackers.corporation_id IS NULL AND attackers.alliance_id IS NULL AND attackers.faction_id IS NOT NULL) THEN [1] ELSE [] END | MERGE (fa:faction {faction_id: toInteger(attackers.faction_id)}) MERGE (fa)-[:ATTACKER]-(k))",
+			km=killmail)
+
+# CALL apoc.load.jsonParams("https://esi.evetech.net/latest/killmails/73281408/6777f783831e74f4e589b4fcc373133beedf77ce/", {UserAgent: "NERDb", Maintainer: "robertinthecloud@icloud.com"},null)
+# YIELD value as km
+# UNWIND km.victim as victim
+# UNWIND km.attackers as attackers
+# MERGE (k:killmail {killmail_id: km.killmail_id})
+# SET k.killmail_time=km.killmail_time, k.x=toFloat(victim.position.x), k.y=toFloat(victim.position.y), k.z=toFloat(victim.position.z), k.ship_type_id=toInteger(victim.ship_type_id), k.victim_corporation_id=toInteger(victim.corporation_id), k.victim_alliance_id=toInteger(victim.alliance_id), k.victim_faction_id=toInteger(victim.faction_id), k.damage_taken=toInteger(victim.damage_taken)
+# MERGE (cv:character {character_id: victim.character_id})
+# MERGE (cv)-[:VICTIM]->(k)
+# FOREACH(at in attackers | MERGE (ca:character {character_id: at.character_id}) MERGE (ca)-[:ATTACKER]-(k))
+
 #Meta
 def get_labels(tx):
 	res = tx.run("CALL db.labels")
