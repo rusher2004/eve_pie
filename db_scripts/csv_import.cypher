@@ -11,6 +11,7 @@ CREATE CONSTRAINT ON (n:corporation) ASSERT n.corporation_id IS UNIQUE;
 CREATE CONSTRAINT ON (n:alliance) ASSERT n.alliance_id IS UNIQUE;
 CREATE CONSTRAINT ON (n:faction) ASSERT n.faction_id IS UNIQUE;
 CREATE CONSTRAINT ON (n:killmail) ASSERT n.killmail_id IS UNIQUE;
+CREATE INDEX ON :attacker(killmail_id, character_id);
 
 //Create Nodes
 

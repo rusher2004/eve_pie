@@ -1,0 +1,98 @@
+body {
+    background-color: #1b252f;
+    color: #c3c3c3;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:link {
+    color: #c3c3c3;
+}
+
+a:hover {
+    color: #c3c3c3;
+    font-weight: bold;
+}
+
+a:visited {
+    color: #c3c3c3;
+}
+
+.char-pic {
+    box-shadow: 0 4px 8px 0 black, 0 6px 20px black;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.page {
+    display: grid;
+    grid-template-rows: 1fr 9fr
+}
+
+.char-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+}
+
+.main-char {
+    text-align: center;
+}
+
+.corp-info-wrapper {
+/*    display: grid;
+    grid-template-columns: 64px auto;*/
+    max-width: 256px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.corp-info-wrapper h3 {
+    text-align: left;
+}
+
+.corp-info {
+    display: grid;
+    grid-template-columns: 69px auto;
+    align-items: center;
+}
+
+.corp-image {
+    display: grid;
+    grid-template-rows: 64px auto;
+}
+
+.corp-image p {
+    margin-top: 2px;
+}
+
+.corp-text {
+    padding-left: 5px;
+    text-align: left;
+    height: 100%;
+}
+
+.alliance-info-wrapper {
+/*    display: grid;
+    grid-template-columns: 64px auto;*/
+}
+
+.alliance-info-wrapper h3 {
+    text-align: left;
+}
+
+.alliance-info {
+    display: grid;
+    grid-template-columns: auto auto;
+    align-items: center;
+}
+
+.attackers {
+    text-align: center;
+}
+
+.victims {
+    text-align: center;
+}

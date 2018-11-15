@@ -19,3 +19,68 @@ SET a.corporation_id=toInteger(corporation_id), a.alliance_id=toInteger(alliance
 
 WITH "https://esi.evetech.net/latest/killmails/73309886/5014d3f4f8390f4620807aa7f91bdd5498e4957c/" as url
 CALL apoc.load.json
+
+
+
+
+
+
+MATCH (a:character)-[at:ATTACKER]->(k:killmail)<-[:VICTIM]-(v:character)
+WITH a,at,k LIMIT 50
+MERGE (a)-[nat:ATTACKER]->(an:attacker :character_attacker)-[:ATTACKED]->(k)
+SET an.attacker_id=a.character_id, an.killmail_id=k.killmail_id, an.corporation_id=at.corporation_id, an.alliance_id=at.alliance_id, an.faction_id=at.faction_id, an.damage_done=at.damage_done, an.final_blow=at.final_blow, an.security_status=at.security_status, an.ship_type_id=at.ship_type_id, an.weapon_type_id=at.weapon_type_id
+RETURN *
+
+
+#Attackers
+MATCH (c:character {character_id: 91418572})-[v:VICTIM]->(k)<-[at:ATTACKED]-(a)
+RETURN {
+attacker_id: a.attacker_id,
+attacks: count(DISTINCT at)
+} as stats
+ORDER BY stats.attacks DESC LIMIT 3
+
+
+
+MATCH (c:character {character_id: 91418572})-[v:VICTIM]->(k)<-[at:ATTACKED]-(a)
+WITH {
+attacker_id: a.attacker_id,
+attacks: count(DISTINCT at)
+} as stats, c
+ORDER BY stats.attacks DESC LIMIT 3
+CREATE (tp:top_attacker {attacker_id: stats.attacker_id, attacks: stats.attacks})
+CREATE (tp)-[:top_attacker]->(c)
+RETURN {
+attacker_id: tp.attacker_id,
+attacks: tp.attacks
+} as new_stats
+ORDER BY new_stats.attacks DESC
+
+
+
+
+
+
+
+#Victims
+MATCH (c:character {character_id: 91817438})
+MATCH (c)-[]->(at:attacker)-[ak:ATTACKED]->(k)<-[v:VICTIM]-(d:character)
+RETURN {
+victim_id: d.character_id,
+attacks: count(at)
+} as stats
+ORDER BY stats.attacks DESC LIMIT 3
+
+
+
+
+
+
+MATCH (c:character {name: 'Fungus Amongus'})
+MATCH (c)-[a]->(k:killmail)<-[b]-(d:character)
+RETURN {
+name: d.name,
+id: d.character_id,
+victim: count(CASE WHEN type(b) = 'VICTIM' THEN a ELSE NULL END)
+} as stats
+ORDER BY stats.victim DESC LIMIT 3

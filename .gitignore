@@ -1,3 +1,4 @@
 env/
 db_scripts/csv/
 db_scripts/json/
+flask/env/
