@@ -50,6 +50,7 @@ attacks: count(DISTINCT at)
 ORDER BY stats.attacks DESC LIMIT 3
 CREATE (tp:top_attacker {attacker_id: stats.attacker_id, attacks: stats.attacks})
 CREATE (tp)-[:top_attacker]->(c)
+SET c.timestamp = timestamp()
 RETURN {
 attacker_id: tp.attacker_id,
 attacks: tp.attacks
@@ -58,9 +59,12 @@ ORDER BY new_stats.attacks DESC
 
 
 
-
-
-
+MATCH (c:character {character_id: 1521661259})
+WITH c
+CALL apoc.do.when(c.timestamp IS NULL, 'MATCH (c)-[v:VICTIM]->(k)<-[at:ATTACKED]-(a) WITH { attacker_id: a.attacker_id, attacks: count(DISTINCT at) } as pre_stats, c ORDER BY pre_stats.attacks DESC LIMIT 3 CREATE (tp:top_attacker {attacker_id: pre_stats.attacker_id, attacks: pre_stats.attacks}) CREATE (tp)-[:top_attacker]->(c) SET c.timestamp = timestamp() RETURN { attacker_id: tp.attacker_id, attacks: tp.attacks } as stats ORDER BY stats.attacks DESC', 'RETURN c',{c:c}) YIELD value as cee
+WITH cee
+CALL apoc.do.when(abs(timestamp() - cee.timestamp) > 86400000, 'MATCH (c)<-[:top_attacker]-(d:top_attacker) DETACH DELETE d MATCH (c)-[v:VICTIM]->(k)<-[at:ATTACKED]-(a) WITH { attacker_id: a.attacker_id, attacks: count(DISTINCT at) } as pre_stats, c ORDER BY pre_stats.attacks DESC LIMIT 3 CREATE (tp:top_attacker {attacker_id: pre_stats.attacker_id, attacks: pre_stats.attacks}) CREATE (tp)-[:top_attacker]->(c) SET c.timestamp = timestamp() RETURN { attacker_id: tp.attacker_id, attacks: tp.attacks } as stats ORDER BY stats.attacks DESC', 'MATCH (c)<-[:top_attacker]-(d:top_attacker) RETURN d as stats ORDER BY stats.attacks DESC', {c:cee}) YIELD VALUE as stats
+RETURN stats
 
 #Victims
 MATCH (c:character {character_id: 91817438})
@@ -84,3 +88,33 @@ id: d.character_id,
 victim: count(CASE WHEN type(b) = 'VICTIM' THEN a ELSE NULL END)
 } as stats
 ORDER BY stats.victim DESC LIMIT 3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MATCH (c:character {character_id: 97079341})
+WITH c
+CALL apoc.do.when(c.timestamp IS NULL, 
+    'MATCH (c)-[v:VICTIM]->(k)<-[at:ATTACKED]-(a:character_attacker) WITH { attacker_id: a.attacker_id, attacks: count(DISTINCT at) } as pre_stats, c ORDER BY pre_stats.attacks DESC LIMIT 3 CREATE (tp:top_attacker {attacker_id: pre_stats.attacker_id, attacks: pre_stats.attacks}) CREATE (tp)-[:TOP_ATTACKER]->(c) SET c.timestamp = timestamp() RETURN c', 
+    'RETURN c',
+    {c:c}) 
+    YIELD value as cee
+WITH c, ((timestamp() - c.timestamp) > 86400000) as bool
+CALL apoc.do.when(bool, 
+    'MATCH (c)<-[:top_attacker]-(d:top_attacker) DETACH DELETE d MATCH (c)-[v:VICTIM]->(k)<-[at:ATTACKED]-(a) WITH { attacker_id: a.attacker_id, attacks: count(DISTINCT at) } as pre_stats, c ORDER BY pre_stats.attacks DESC LIMIT 3 CREATE (tp:top_attacker {attacker_id: pre_stats.attacker_id, attacks: pre_stats.attacks}) CREATE (tp)-[:TOP_ATTACKER]->(c) SET c.timestamp = timestamp() RETURN { attacker_id: tp.attacker_id, attacks: tp.attacks } as stats ORDER BY stats.attacks DESC', 
+    'MATCH (c)<-[:TOP_ATTACKER]-(d:top_attacker) RETURN { attacker_id: d.attacker_id, attacks: d.attacks } as stats ORDER BY stats.attacks DESC', 
+    {c:c}) 
+    YIELD value as stats
+RETURN stats

@@ -8,7 +8,7 @@
 <div class="char-wrapper">
     <div class="victims">
         <h2>Top Victims</h2>
-        {% if character.victims[0] %}<h4><a href="/character/{{ character.victims[0].character_id }}">{{ character.victims[0].name }}</a></h4> {% endif %}
+        {% if character.victims[0] %}<h4><a href="/character/{{ character.victims[0].character_id }}">{{ character.victims[0].name }} - {{ character.victims[0].attack_count }}</a></h4> {% endif %}
         {% if character.victims[0] %}<img class="char-pic" src="http://image.eveonline.com/Character/{{ character.victims[0].character_id }}_128.jpg"> {% endif %}
         {% if character.victims[1] %}<p>{{ character.victims[1].name }} - {{ character.victims[1].attack_count }}</p> {% endif %}
         {% if character.victims[2] %}<p>{{ character.victims[2].name }} - {{ character.victims[2].attack_count }}</p> {% endif %}
@@ -46,7 +46,7 @@
 
     <div class="attackers">
         <h2>Top Attackers</h2>
-        {% if character.attackers[0] %} <h4><a href="/character/{{ character.attackers[0].character_id }}">{{ character.attackers[0].name }}</a></h4> {% endif %}
+        {% if character.attackers[0] %} <h4><a href="/character/{{ character.attackers[0].character_id }}">{{ character.attackers[0].name }}: {{ character.attackers[0].attack_count }} kills</a></h4> {% endif %}
         {% if character.attackers[0] %} <a href="/character/{{ character.attackers[0].character_id }}"><img class="char-pic" src="http://image.eveonline.com/Character/{{ character.attackers[0].character_id }}_128.jpg"></a> {% endif %}
         {% if character.attackers[1] %} <p>{{ character.attackers[1].name }}: {{ character.attackers[1].attack_count }} kills</p> {% endif %}
         {% if character.attackers[2] %} <p>{{ character.attackers[2].name }}: {{ character.attackers[2].attack_count }} kills</p> {% endif %}

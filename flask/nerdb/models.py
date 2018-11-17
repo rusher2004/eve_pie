@@ -37,8 +37,9 @@ class Character():
                 res = session.read_transaction(get_character_attackers, self.character_id)
                 count = 0
                 for i in res:
-                    self.attackers.append(Character(i['stats']['attacker_id'], False))
-                    self.attackers[count].attack_count = i['stats']['attacks']
+                    for j in i:
+                        self.attackers.append(Character(j['stats']['attacker_id'], False))
+                        self.attackers[count].attack_count = j['stats']['attacks']
                     count += 1
 
             self.victims = []
@@ -46,8 +47,9 @@ class Character():
                 res = session.read_transaction(get_character_victims, self.character_id)
                 count = 0
                 for i in res:
-                    self.victims.append(Character(i['stats']['victim_id'], False))
-                    self.victims[count].attack_count = i['stats']['attacks']
+                    for j in i:
+                        self.victims.append(Character(j['stats']['victim_id'], False))
+                        self.victims[count].attack_count = j['stats']['attacks']
                     count +=1
 
 class Corporation():
