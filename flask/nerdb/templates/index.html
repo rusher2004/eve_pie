@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<h1>NERDb</h1>
+<!-- <h3>Find character</h3> -->
+<form action="http://localhost:5000/character/<character_id>">
+    Character ID: <input type="number">
+    <input type="submit" value="Submit">
+</form>
+
+{% endblock %}
