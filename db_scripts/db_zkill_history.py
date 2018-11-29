@@ -20,10 +20,10 @@ for m in range(1,13):
 			try:
 				res = s.get(query).json()
 				if not res:
-					print(date + ' does not exist')
+					print(f"{year}{month}{day} does not exist")
 				else:
 					for line in res:
 						writer.writerow([line, res[line]])
 			except Exception as e:
-				print("caught error on date: " + date)
+				print(f"caught error on date: {year}{month}{day}")
 				print(e)

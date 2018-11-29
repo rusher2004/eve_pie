@@ -1,4 +1,4 @@
-from .models import Character, Corporation, Alliance
+from .models import Character, Corporation, Alliance, Test
 from flask import Flask, render_template
 
 app = Flask(__name__)
@@ -21,3 +21,12 @@ def corporation(corporation_id):
 def alliance(alliance_id):
     alliance = Alliance(alliance_id)
     return render_template('alliance.html', alliance=alliance)
+
+@app.route('/test/<test_id>')
+def test(test_id):
+    test_corp = Test(test_id)
+    return render_template('test.html', test_corp=test_corp)
+
+@app.route('/accordion')
+def accordion():
+    return render_template('accordion.html')

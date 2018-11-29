@@ -22,29 +22,6 @@ write_alliance_kill = dbq.write_alliance_kill
 write_faction_kill = dbq.write_faction_kill
 write_csv_processing = dbq.write_csv_processing
 write_csv_completed = dbq.write_csv_completed
-# add_character_attacker = dbq.add_character_attacker
-# add_corp_attacker = dbq.add_corp_attacker
-# add_alliance_attacker = dbq.add_alliance_attacker
-# add_faction_attacker = dbq.add_faction_attacker
-
-# res = esi_session.get('https://esi.evetech.net/latest/killmails/72460933/8d4922687cc60a9689c8176ed03042d58135a3ba/').json()
-
-# def iterate(item):
-# 	if isinstance(item,(dict)):
-# 		for sub in item:
-# 			iterate(item[sub])
-# 	elif isinstance(item,list):
-# 		for sub in item:
-# 			iterate(sub)
-# 	else:
-# 		print(item)
-
-# print(iterate(res))
-
-# with open('json/data.json','a') as json_file:
-# 	json.dump(res,json_file)
-# 	json_file.write('\n')
-
 
 def api_call(url):
 	esi_get_query = url

@@ -118,3 +118,14 @@ CALL apoc.do.when(bool,
     {c:c}) 
     YIELD value as stats
 RETURN stats
+
+
+
+
+
+MATCH (c:character {character_id: 93284813})
+WITH c, (CASE WHEN c.demos_timestamp IS NULL THEN false WHEN timestamp() - c.demos_timestamp < 86400000 THEN true ELSE false END) as bool
+CALL apoc.do.when(bool, "RETURN c", "CALL apoc.load.json('https://esi.evetech.net/latest/characters/93284813') YIELD value as n SET c.demos_timestamp = timestamp() RETURN n",{c:c}) YIELD value as val
+WITH c, (val.n IS NULL) as bool2, (CASE WHEN val.n IS NOT NULL THEN val.n ELSE null END) as props
+CALL apoc.do.when(bool2, "RETURN c","SET c += props RETURN c",{c:c,props:props}) YIELD value as results
+RETURN results
