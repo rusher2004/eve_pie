@@ -1,7 +1,8 @@
 from neo4j.v1 import GraphDatabase as gd
 import csv
+import secrets
 
-driver = gd.driver("bolt://localhost:7687", auth=("neo4j", "notneo4j"))
+driver = gd.driver("bolt://localhost:7687", auth=(secrets.username, secrets.password))
 
 #Universe
 def write_region(tx, region, name):
