@@ -1,4 +1,5 @@
 # NERDb
+__Project currently inactive__
 
 Live Site:
 https://nerdb.space
